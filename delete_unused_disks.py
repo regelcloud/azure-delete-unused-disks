@@ -31,7 +31,7 @@ def run(resource_group_name):
         date_format = "%Y-%m-%d %H:%M:%S.%f"
         a = datetime.datetime.strptime(str(datetime.datetime.now()), date_format)
         b = datetime.datetime.strptime(str(disk.time_created).split('+')[0], date_format)
-        delta = b - a
+        delta = a - b
         print("Disk created before {} days".format(int(delta.days)))
         if not disk.managed_by and disk.disk_state == 'Unattached' and int(delta.days) > 7:
             print("[INFO] Deleting unattached disk {} in resource group {}".format(disk.name, resource_group_name))
