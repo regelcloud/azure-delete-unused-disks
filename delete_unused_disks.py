@@ -4,6 +4,7 @@ from azure.mgmt.compute import ComputeManagementClient
 from azure.common.credentials import ServicePrincipalCredentials
 import os
 import argparse
+import datetime
 
 def get_credentials():
     subscription_id = os.environ['AZURE_SUBSCRIPTION_ID']
@@ -24,8 +25,15 @@ def run(resource_group_name):
     #     print(item)
     disks = compute_client.disks.list_by_resource_group(resource_group_name, custom_headers=None, raw=False)
     for disk  in disks:
+        print("Today's Date",datetime.datetime.now())
         # print(disk.managed_by, disk.disk_state)
-        if not disk.managed_by and disk.disk_state == 'Unattached':
+        print("Disk Created Date:", disk.time_created)
+        date_format = "%Y-%m-%d %H:%M:%S.%f"
+        a = datetime.datetime.strptime(str(datetime.datetime.now()), date_format)
+        b = datetime.datetime.strptime(str(disk.time_created).split('+')[0], date_format)
+        delta = b - a
+        print("Disk created before {} days".format(int(delta.days)))
+        if not disk.managed_by and disk.disk_state == 'Unattached' and int(delta.days) > 7:
             print("[INFO] Deleting unattached disk {} in resource group {}".format(disk.name, resource_group_name))
             disks = compute_client.disks.delete(resource_group_name, disk.name, custom_headers=None, raw=False, polling=True)
         else:
