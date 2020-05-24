@@ -35,7 +35,7 @@ def run(resource_group_name):
         print("Disk created before {} days".format(int(delta.days)))
         if not disk.managed_by and disk.disk_state == 'Unattached' and int(delta.days) > 7:
             print("[INFO] Deleting unattached disk {} in resource group {}".format(disk.name, resource_group_name))
-            disks = compute_client.disks.delete(resource_group_name, disk.name, custom_headers=None, raw=False, polling=True)
+            #disks = compute_client.disks.delete(resource_group_name, disk.name, custom_headers=None, raw=False, polling=True)
         else:
             print("[INFO]  Skiiping!! Disk {} is attached  to source {} and  belongs to resource group {}".format(disk.name, disk.managed_by, resource_group_name))
 
